@@ -16,6 +16,30 @@
 
 </div>
 
+> [!IMPORTANT]
+> **This is a personal fork build.** `master` mirrors upstream Helix; the fork
+> branches add a **file-explorer side panel** (port of the rejected
+> [#5768](https://github.com/helix-editor/helix/pull/5768)) and the experimental
+> **Steel plugin system** (draft [#8675](https://github.com/helix-editor/helix/pull/8675)),
+> plus a file-explorer plugin.
+>
+> Install it as your normal `hx` (Linux x86_64) with one command:
+>
+> ```sh
+> curl -fsSL https://raw.githubusercontent.com/SpicyDogWings/helix/feature/steel-on-personal/scripts/install-fork.sh | sh
+> ```
+>
+> That downloads the `fork-*` release, installs `hx` **with its runtime** in
+> `~/.local/hx-fork`, links `~/.local/bin/hx`, drops the file-explorer plugin in
+> `~/.config/helix/` and binds `space P` to it. Installer options:
+> `--no-config` (binary only), `--prefix=DIR`, `--bin-dir=DIR`,
+> `HX_FORK_TAG=<tag>` to pin a release.
+>
+> After installing: `space E` opens the Rust explorer panel (reveal current file),
+> `space P` the plugin explorer, `space e` stays the classic picker.
+> What differs from upstream, branch by branch, is in
+> [FORK_CHANGELOG.md](./FORK_CHANGELOG.md).
+
 ![Screenshot](./screenshot.png)
 
 A [Kakoune](https://github.com/mawww/kakoune) / [Neovim](https://github.com/neovim/neovim) inspired editor, written in Rust.

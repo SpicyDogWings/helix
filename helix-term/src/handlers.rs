@@ -28,7 +28,10 @@ mod snippet;
 mod workspace_trust;
 
 pub fn setup(config: Arc<ArcSwap<Config>>) -> Handlers {
-    events::register();
+    // The event registry panics on duplicate registration, so register only once even
+    // when multiple editors are created in the same process (e.g. `Context::dummy_editor`).
+    static REGISTER_EVENTS: std::sync::Once = std::sync::Once::new();
+    REGISTER_EVENTS.call_once(events::register);
 
     let event_tx = completion::CompletionHandler::new(config).spawn();
     let signature_hints = SignatureHelpHandler::new().spawn();

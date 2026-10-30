@@ -27,13 +27,61 @@ pub struct Context<'a> {
     pub jobs: &'a mut Jobs,
 }
 
-impl Context<'_> {
+impl<'a> Context<'a> {
     /// Waits on all pending jobs, and then tries to flush all pending write
     /// operations for all documents.
     pub fn block_try_flush_writes(&mut self) -> anyhow::Result<()> {
         tokio::task::block_in_place(|| helix_lsp::block_on(self.jobs.finish(self.editor, None)))?;
         tokio::task::block_in_place(|| helix_lsp::block_on(self.editor.flush_writes()))?;
         Ok(())
+    }
+
+    /// Purpose: to test `handle_event` without escalating the test case to integration test.
+    /// Usage:
+    /// ```
+    /// let mut editor = Context::dummy_editor();
+    /// let mut jobs = Context::dummy_jobs();
+    /// let mut cx = Context::dummy(&mut jobs, &mut editor);
+    /// ```
+    #[cfg(test)]
+    pub fn dummy(jobs: &'a mut Jobs, editor: &'a mut helix_view::Editor) -> Context<'a> {
+        Context {
+            jobs,
+            scroll: None,
+            editor,
+        }
+    }
+
+    #[cfg(test)]
+    pub fn dummy_jobs() -> Jobs {
+        Jobs::new()
+    }
+
+    #[cfg(test)]
+    pub fn dummy_editor() -> Editor {
+        use arc_swap::{access::Map, ArcSwap};
+        use helix_core::syntax;
+
+        let config = std::sync::Arc::new(ArcSwap::from_pointee(crate::config::Config::default()));
+        let handlers = crate::handlers::setup(config.clone());
+        let syn_loader = std::sync::Arc::new(ArcSwap::from_pointee(
+            syntax::Loader::new(helix_core::syntax::config::Configuration {
+                language: Vec::new(),
+                language_server: std::collections::HashMap::new(),
+            })
+            .expect("empty syntax configuration"),
+        ));
+
+        Editor::new(
+            Rect::new(0, 0, 120, 30),
+            std::sync::Arc::new(helix_view::theme::Loader::new(&[])),
+            syn_loader,
+            std::sync::Arc::new(Map::new(config, |config: &crate::config::Config| {
+                &config.editor
+            })),
+            handlers,
+            helix_loader::workspace_trust::WorkspaceTrust::fully_trusted(),
+        )
     }
 }
 
@@ -72,6 +120,19 @@ pub trait Component: Any + AnyComponent {
 
     fn id(&self) -> Option<&'static str> {
         None
+    }
+
+    #[cfg(test)]
+    /// Utility method for testing `handle_event` without using integration test.
+    /// Especially useful for testing helper components such as `Prompt`, `TreeView` etc
+    fn handle_events(&mut self, events: &str) -> anyhow::Result<()> {
+        let mut editor = Context::dummy_editor();
+        let mut jobs = Context::dummy_jobs();
+        let mut cx = Context::dummy(&mut jobs, &mut editor);
+        for event in helix_view::input::parse_macro(events)? {
+            self.handle_event(&Event::Key(event), &mut cx);
+        }
+        Ok(())
     }
 }
 

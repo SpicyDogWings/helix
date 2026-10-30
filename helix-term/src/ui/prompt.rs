@@ -112,6 +112,10 @@ impl Prompt {
         self.cursor
     }
 
+    pub fn prompt(&self) -> &str {
+        self.prompt.as_ref()
+    }
+
     pub fn with_line(mut self, line: String, editor: &Editor) -> Self {
         self.set_line(line, editor);
         self

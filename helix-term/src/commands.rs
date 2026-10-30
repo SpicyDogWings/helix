@@ -406,6 +406,8 @@ impl MappableCommand {
         file_explorer, "Open file explorer in workspace root",
         file_explorer_in_current_buffer_directory, "Open file explorer at current buffer's directory",
         file_explorer_in_current_directory, "Open file explorer at current working directory",
+        open_or_focus_explorer, "Open or focus explorer",
+        reveal_current_file, "Reveal current file in explorer",
         code_action, "Perform code action",
         buffer_picker, "Open buffer picker",
         jumplist_picker, "Open jumplist picker",
@@ -3212,6 +3214,51 @@ fn file_picker_in_current_directory(cx: &mut Context) {
     }
     let picker = ui::file_picker(cx.editor, cwd);
     cx.push_layer(Box::new(overlaid(picker)));
+}
+
+fn open_or_focus_explorer(cx: &mut Context) {
+    cx.callback
+        .push(Box::new(
+            |compositor: &mut Compositor, cx: &mut compositor::Context| {
+                if let Some(editor) = compositor.find::<ui::EditorView>() {
+                    match editor.explorer.as_mut() {
+                        Some(explore) => explore.focus(),
+                        None => match ui::Explorer::new(cx) {
+                            Ok(explore) => editor.explorer = Some(explore),
+                            Err(err) => cx.editor.set_error(format!("{}", err)),
+                        },
+                    }
+                }
+            },
+        ));
+}
+
+fn reveal_file(cx: &mut Context, path: Option<PathBuf>) {
+    cx.callback
+        .push(Box::new(
+            |compositor: &mut Compositor, cx: &mut compositor::Context| {
+                if let Some(editor) = compositor.find::<ui::EditorView>() {
+                    (|| match editor.explorer.as_mut() {
+                        Some(explorer) => match path {
+                            Some(path) => explorer.reveal_file(path),
+                            None => explorer.reveal_current_file(cx),
+                        },
+                        None => {
+                            editor.explorer = Some(ui::Explorer::new(cx)?);
+                            if let Some(explorer) = editor.explorer.as_mut() {
+                                explorer.reveal_current_file(cx)?;
+                            }
+                            Ok(())
+                        }
+                    })()
+                    .unwrap_or_else(|err| cx.editor.set_error(err.to_string()))
+                }
+            },
+        ));
+}
+
+fn reveal_current_file(cx: &mut Context) {
+    reveal_file(cx, None)
 }
 
 fn file_explorer(cx: &mut Context) {

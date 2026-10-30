@@ -21,6 +21,7 @@
   - [`[editor.gutters.code-action-hint]` Section](#editorgutterscode-action-hint-section)
 - [`[editor.soft-wrap]` Section](#editorsoft-wrap-section)
 - [`[editor.smart-tab]` Section](#editorsmart-tab-section)
+- [`[editor.explorer]` Section](#editorexplorer-section)
 - [`[editor.inline-diagnostics]` Section](#editorinline-diagnostics-section)
 - [`[editor.word-completion]` Section](#editorword-completion-section)
 - [`[editor.workspace-trust]` Section](#editorworkspace-trust-section)
@@ -488,6 +489,15 @@ S-tab = "move_parent_node_start"
 tab = "extend_parent_node_end"
 S-tab = "extend_parent_node_start"
 ```
+
+### `[editor.explorer]` Section
+
+Sets explorer side width and style.
+
+| Key            | Description                                 | Default |
+| -------------- | ------------------------------------------- | ------- |
+| `column-width` | explorer side width                         | 36      |
+| `position`     | explorer widget position, `left` or `right` | `left`  |
 
 ### `[editor.inline-diagnostics]` Section
 

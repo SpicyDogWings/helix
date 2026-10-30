@@ -7,6 +7,20 @@ the branches listed below.
 Fork builds are tagged `fork-YYYY.MM.DD`. They are **not** upstream releases and
 they are not on the upstream track: see [Planned upstream](#planned-upstream).
 
+## Install a build
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/SpicyDogWings/helix/feature/steel-on-personal/scripts/install-fork.sh | sh
+```
+
+Downloads the latest `fork-*` release, installs `hx` + `runtime/` in
+`~/.local/hx-fork`, links `~/.local/bin/hx`, installs the file-explorer plugin
+and binds `space P` (opt out with `--no-config`; `HX_FORK_TAG` pins a release).
+
+Latest: [fork-2026.10.30](https://github.com/SpicyDogWings/helix/releases/tag/fork-2026.10.30) —
+`hx-fork-2026.10.30-x86_64-linux.tar.gz`,
+sha256 `dc2b4909cbc4d883eada29aa9ca13cc14a154ce213f7e8a948fdf90fc14321e7`.
+
 ---
 
 ## 2026.10.30 — file explorer side panel + Steel plugin system
@@ -30,7 +44,7 @@ Two tracks landed on the same date:
 | Steel | Plugin system from draft PR #8675 (`PluginSystem` trait, optional `steel` cargo feature) | `424add100` (upstream head) |
 | Steel | `plugin/file-explorer/`: tree panel as a Steel plugin (`explorer.scm`, 417 l. + README + init example) | `a63269388` |
 | Merge | `personal` + Steel, conflicts resolved, builds with `--features steel` | `e5f19e00c`, `e9ced7f9f` |
-| Release | `fork-2026.10.30` build (x86_64-linux), one-command installer, this changelog | tag `fork-2026.10.30` |
+| Release | `fork-2026.10.30` build (x86_64-linux, 39 MB), one-command installer, this changelog | tag `fork-2026.10.30` |
 
 ### Forced deviations from PR #5768
 

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.18.5/.schema/devbox.schema.json",
+  "packages": [
+    "rustup@latest",
+    "gcc@latest",
+    "gnumake@latest",
+    "pkg-config@latest",
+    "git@latest",
+    "clang@latest",
+    "mold@latest"
+  ],
+  "env": {
+    "RUST_BACKTRACE": "1"
+  },
+  "shell": {
+    "init_hook": [
+      "# usa el toolchain fijado en rust-toolchain.toml (1.90.0 + rustfmt/clippy/rust-src)",
+      "rustup show >/dev/null 2>&1 || rustup toolchain install --profile minimal --no-self-update",
+      "rustup component add rust-analyzer >/dev/null 2>&1 || true",
+      "echo \"helix devbox: $(rustc --version) | gcc $(gcc -dumpversion)\""
+    ],
+    "scripts": {
+      "run": ["cargo run --release"],
+      "build": ["cargo build --release"],
+      "test": ["cargo test --workspace"],
+      "fmt": ["cargo fmt --all"],
+      "lint": ["cargo clippy --workspace --all-targets -- -D warnings"],
+      "docgen": ["cargo xtask docgen"],
+      "grammars": [
+        "cargo run --release -- -g fetch",
+        "cargo run --release -- -g build"
+      ],
+      "health": ["cargo run --release -- --health"],
+      "mold": ["RUSTFLAGS=\"-C link-arg=-fuse-ld=mold\" cargo build --release"]
+    }
+  }
+}

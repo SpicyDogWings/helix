@@ -104,6 +104,33 @@ hx -g fetch && hx -g build           # grammars
 rustup component add rust-analyzer   # si usás el toolchain del repo (MSRV)
 ```
 
+## Entorno reproducible (devbox)
+
+`devbox.json` fija todo lo necesario para buildear en cualquier máquina con
+Linux/macOS (Nix se instala solo). `devbox.lock` va commiteado; `.devbox/` no.
+
+```sh
+devbox install        # baja el entorno y sincroniza el lock
+devbox shell          # shell interactiva con init_hook
+devbox run build      # cargo build --release
+devbox run run        # cargo run --release
+devbox run test       # cargo test --workspace
+devbox run fmt        # cargo fmt --all
+devbox run lint       # cargo clippy --workspace --all-targets -D warnings
+devbox run docgen     # cargo xtask docgen
+devbox run grammars   # hx -g fetch + hx -g build
+devbox run health     # hx --health
+devbox run mold       # build con mold como linker
+```
+
+Incluye: `rustup` (respeta `rust-toolchain.toml` → 1.90.0 con rustfmt, clippy,
+rust-src y rust-analyzer), `gcc` 16 (compila grammars C/C++), `clang` 21 y
+`mold` 3 (link rápido opcional), `git`, `make`, `pkg-config`. Helix no necesita
+librerías nativas aparte: el build es Rust puro + grammars.
+
+El `init_hook` instala/verifica el toolchain del repo y agrega `rust-analyzer`
+(la doc de Helix lo pide cuando no usás el devshell de Nix).
+
 ## Licencia
 
 Helix es **MPL-2.0** (copyleft por archivo). Uso personal no impone nada; si

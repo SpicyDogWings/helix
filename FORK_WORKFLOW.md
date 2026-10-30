@@ -23,13 +23,25 @@ origin    https://github.com/SpicyDogWings/helix.git   (tu fork)
 upstream  https://github.com/helix-editor/helix.git    (helix oficial, push deshabilitado)
 ```
 
-`master` sigue a `upstream/master`. `core.hooksPath=.githooks`, `push.default=current`,
-`remote.pushDefault=origin` están configurados en el repo.
+`master` sigue a `upstream/master`. `push.default=current` y
+`remote.pushDefault=origin` están configurados en el repo. El push por HTTPS usa
+`gh` como credential helper (`gh auth setup-git`).
 
 ## Reglas (aplicadas por hooks, no por memoria)
 
-- `.githooks/pre-commit` **bloquea commits en `master`**. Bypass consciente: `--no-verify`.
-- `.githooks/pre-push` **bloquea pushear `master`** a cualquier remoto.
+Los hooks activos viven en `.git/hooks/` (así funcionan en **todas** las ramas,
+incluso con `master` chequeado). La copia versionada está en `.githooks/`:
+
+```sh
+# después de clonar de cero:
+cp .githooks/pre-commit .githooks/pre-push .git/hooks/ && chmod +x .git/hooks/pre-*
+```
+
+- `pre-commit` **bloquea commits en `master`**. Bypass consciente: `--no-verify`.
+- `pre-push` **bloquea pushear `master`** a cualquier remoto.
+
+Nota: no usar `core.hooksPath=.githooks` — en `master` ese directorio no existe
+y git saltea los hooks en silencio (pasó en la prueba inicial).
 
 Motivo: si `master` lleva commits propios, `git reset --hard upstream/master`
 los pierde y los PRs arrastran ruido. Los parches viven en `personal`.

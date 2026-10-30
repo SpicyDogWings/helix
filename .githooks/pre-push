@@ -1,0 +1,13 @@
+#!/bin/sh
+# Regla: master local nunca se pushea; se sincroniza desde upstream.
+while read -r local_ref local_sha remote_ref remote_sha; do
+    case "$remote_ref" in
+        refs/heads/master)
+            echo "✗ no se pushea master." >&2
+            echo "  Sincronizalo con: git fetch upstream && git reset --hard upstream/master" >&2
+            echo "  y el fork con:    gh repo sync SpicyDogWings/helix -b master" >&2
+            exit 1
+            ;;
+    esac
+done
+exit 0

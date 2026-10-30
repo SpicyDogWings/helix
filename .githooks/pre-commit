@@ -1,0 +1,10 @@
+#!/bin/sh
+# Regla: master es espejo de upstream — no se commitea ahí.
+branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+if [ "$branch" = "master" ]; then
+    echo "✗ master es espejo de helix-editor/helix: no se commitea acá." >&2
+    echo "  Cambiá a 'personal' (tu trabajo) o creá 'git switch -c feat/<tema> upstream/master'." >&2
+    echo "  Si de verdad necesitás saltearlo: git commit --no-verify" >&2
+    exit 1
+fi
+exit 0

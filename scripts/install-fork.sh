@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Install the fork build of Helix: Rust side-panel explorer + Steel plugin system.
 #
-#   curl -fsSL https://raw.githubusercontent.com/SpicyDogWings/helix/feature/steel-on-personal/scripts/install-fork.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/SpicyDogWings/helix/personal/scripts/install-fork.sh | sh
 #
 # Options (or pass them after `sh -s --`):
 #   --no-config        install the binary only, leave ~/.config/helix untouched

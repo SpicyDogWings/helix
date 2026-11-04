@@ -10,16 +10,32 @@ they are not on the upstream track: see [Planned upstream](#planned-upstream).
 ## Install a build
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/SpicyDogWings/helix/feature/steel-on-personal/scripts/install-fork.sh | sh
+curl -fsSL https://raw.githubusercontent.com/SpicyDogWings/helix/personal/scripts/install-fork.sh | sh
 ```
 
 Downloads the latest `fork-*` release, installs `hx` + `runtime/` in
 `~/.local/hx-fork`, links `~/.local/bin/hx`, installs the file-explorer plugin
 and binds `space P` (opt out with `--no-config`; `HX_FORK_TAG` pins a release).
 
-Latest: [fork-2026.10.30](https://github.com/SpicyDogWings/helix/releases/tag/fork-2026.10.30) —
-`hx-fork-2026.10.30-x86_64-linux.tar.gz`,
-sha256 `dc2b4909cbc4d883eada29aa9ca13cc14a154ce213f7e8a948fdf90fc14321e7`.
+Latest: [fork-2026.11.04](https://github.com/SpicyDogWings/helix/releases/tag/fork-2026.11.04) —
+`hx-fork-2026.11.04-x86_64-linux.tar.gz`,
+sha256 `3f47b1d3189e09ad6e109ef8a4b1fb1a0f9c64cd18ee3938abdb06d1d9ed7b8d`.
+
+---
+
+## 2026.11.04 — todo mergeado en `personal`
+
+Sin features nuevas: se mergearon en `personal` las ramas que estaban sueltas
+(`feature/steel-on-personal`, `feature/explorer-as-plugin`,
+`feature/steel-with-explorer-plugin`), así que `personal` ya es superset de
+todas y es la rama del release. El árbol del merge es idéntico a
+`feature/steel-on-personal`; `feature/steel-plugin-system` quedó contenida.
+
+Build verificado: `cargo build --release -p helix-term --features steel --bin hx`
+y `cargo check -p helix-term` sobre el merge.
+
+La config que no es core (config.toml, languages.toml, theme) vive aparte:
+<https://gitlab.com/SpicyDogWings/helix-configs>.
 
 ---
 
